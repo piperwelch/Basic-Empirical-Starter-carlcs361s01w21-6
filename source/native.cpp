@@ -7,10 +7,10 @@
 #include "emp/base/vector.hpp"
 #include "emp/config/command_line.hpp"
 #include "emp/math/random_utils.hpp"
-#include "emp/math/Random.hpp"
-#include "emp/config/ArgManager.hpp"
+#include "emp/math/Random.hpp"    
+#include "emp/config/ArgManager.hpp" 
 
-#include "World.h" 
+#include "World.h"  
   
 // This is the main function for the NATIVE version of this project.
 
@@ -44,24 +44,24 @@ int main(int argc, char* argv[])
   /*What is this?*/
  // emp::vector<std::string> args = emp::cl::args_to_strings(argc, argv);
 
-  emp::Random random(2);
+  emp::Random random(config.SEED());
   OrgWorld world(random, config.maxRss(), config.numRss());
-  
+   
 
-  //world.SetupOrgFile("Org_Vals_1.dat");
+  world.SetupOrgFile(config.FILE_NAME()+".csv"); 
   world.Resize(100,100);
 
-  for (int i = 0; i < 5000; i++){
+  for (int i = 0; i < 1000; i++){
     emp::Ptr<Organism> new_org = new Organism(&random, 0.5);
     world.Inject(*new_org);
   }
   
-  
+ 
   
 
   for(int i=0; i < 1000; i++) {
-    std::cout<< "Update: " << i << std::endl;
-    std::cout << "Population: " << world.GetNumOrgs() << std::endl;
+   // std::cout<< "Update: " << i << std::endl; 
+    //std::cout << "Population: " << world.GetNumOrgs() << std::endl;
     world.Update();
   }
 }

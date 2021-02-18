@@ -56,18 +56,6 @@ class OrgWorld : public emp::World<Organism> {
       return pop;
       }
 
-    emp::DataMonitor<int>& GetOrgCountDataNode() {
-        if(!data_node_orgcount) {
-        data_node_orgcount.New();
-        OnUpdate([this](size_t){
-            data_node_orgcount -> Reset();
-            for (size_t i = 0; i< pop.size(); i++)
-            if(IsOccupied(i))
-                data_node_orgcount->AddDatum(1);
-        });
-        }
-        return *data_node_orgcount;
-    }
 
     int checkQuorumSense(int loc){
       /*how to incorporate where the rss is?*/ 
@@ -90,22 +78,23 @@ class OrgWorld : public emp::World<Organism> {
 
     void quorumSense(int loc){
       double numCoop = checkQuorumSense(loc);
-      if (numCoop > 0)
-        //std::cout << numCoop << " num coop" << std::endl;
+      
       if (numCoop/8 > .6){
         pop[loc]->points += resources[loc];
       }
     }
 
     bool individualRSSacq(int location){
-      emp::Ptr<Organism> org = pop[location];
+      
       double randCoopProb = random.GetDouble();
-      double rssProb = random.GetDouble(0.1);
-      if (org->coop_prob < randCoopProb){
-        for (int i = 0; i > 10000; i++){
+      double rssProb = random.GetDouble();
+      if (pop[location]->coop_prob < randCoopProb){
+        //std::cout << pop[location]->coop_prob << std::endl;
+        for (int i = 0; i < 10000; i++){
             if (isNeighbor(location, i)) 
-              if (0.1 < rssProb){
-                org->points += resources[i];
+              if (0.3 > rssProb){
+                //std::cout << "SUCCESSFUL INDIVIDUAL RSS ACQ" << std::endl;
+                pop[location]->points += resources[i];
                 resources[i] = 0;
                 return true;
           }
@@ -136,7 +125,18 @@ class OrgWorld : public emp::World<Organism> {
         }
       }
     }
-
+    emp::DataMonitor<int>& GetOrgCountDataNode() {
+        if(!data_node_orgcount) {
+        data_node_orgcount.New();
+        OnUpdate([this](size_t){
+            data_node_orgcount -> Reset();
+            for (size_t i = 0; i< pop.size(); i++)
+            if(IsOccupied(i))
+                data_node_orgcount->AddDatum(1);
+        });
+        }
+        return *data_node_orgcount;
+    }
     emp::DataMonitor<double, emp::data::Histogram>& GetOrgCoopValDataNode() {
         if (!data_node_orgcoop) {
         data_node_orgcoop.New();
@@ -197,7 +197,7 @@ class OrgWorld : public emp::World<Organism> {
       }
       
       addResources();
-      std::cout << "Average cooperation probability: " << total_coop/GetNumOrgs() <<std::endl;
+      //std::cout << "Average cooperation probability: " << total_coop/GetNumOrgs() <<std::endl;
       /* how many organisms to start with?
       how many resources and resource values?
       what mutation value?

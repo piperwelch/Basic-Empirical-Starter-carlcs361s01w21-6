@@ -18,4 +18,4 @@ int main()
   std::cout << "Hello, console!" << std::endl;
   return example();
 }
- 
+      

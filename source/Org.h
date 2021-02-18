@@ -8,7 +8,7 @@
 class Organism {
     private:
         
-        double mut_rate = 0.002;
+        double mut_rate = 0.02;
         double qs_radius = 10;
         double quorum_threshold = 6;
         emp::Ptr<emp::Random> random;
@@ -53,9 +53,9 @@ class Organism {
 
     emp::Ptr<Organism> checkReproduction() {
         emp::Ptr<Organism> offspring;
-        if(points>=100) {
+        if(points>=1000) {
             offspring = new Organism(*this);
-            points -= 100;
+            points -= 1000;
             offspring->mutate();
             offspring->setPoints(0);
         }
