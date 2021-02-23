@@ -80,7 +80,7 @@ class OrgWorld : public emp::World<Organism> {
       double numCoop = checkQuorumSense(loc);
       
       if (numCoop/8 > .6){
-        pop[loc]->points += resources[loc];
+        pop[loc]->points += (resources[loc]/numCoop);
       }
     }
 
@@ -92,8 +92,7 @@ class OrgWorld : public emp::World<Organism> {
         //std::cout << pop[location]->coop_prob << std::endl;
         for (int i = 0; i < 10000; i++){
             if (isNeighbor(location, i)) 
-              if (0.3 > rssProb){
-                //std::cout << "SUCCESSFUL INDIVIDUAL RSS ACQ" << std::endl;
+              if (0.3 >= rssProb){
                 pop[location]->points += resources[i];
                 resources[i] = 0;
                 return true;
@@ -104,23 +103,33 @@ class OrgWorld : public emp::World<Organism> {
    } 
 
     void addResources(){
-      int count = 0;
-      /*finds the number of resources needed to be added*/
-      for (int i = 0; i < resources.size(); i++){
-        if (resources[i] != 0){
-          count++;
+
+      if (numRSS == 9999){
+        for (int i = 0; i < resources.size(); i++){ 
+          if (resources[i] == 0){
+            int val = random.GetInt(0, maxRSS);
+            resources[i] = val; 
           }
         }
-      if (count < numRSS){
-        int diff = numRSS - count;
-        int count2 = 0;
-        while (count2 <= diff){
-          //comments!
-          int num = random.GetInt(resources.size());
-          if (resources[num] == 0){
-            int rssToAdd = random.GetInt(1, maxRSS);
-            resources[num] = rssToAdd;
-            count2++;
+      } else{
+        int count = 0;
+        /*finds the number of resources needed to be added*/
+        for (int i = 0; i < resources.size(); i++){
+          if (resources[i] != 0){
+            count++;
+            }
+          }
+        if (count < numRSS){
+          int diff = numRSS - count;
+          int count2 = 0;
+          while (count2 <= diff){
+            //comments!
+            int num = random.GetInt(resources.size());
+            if (resources[num] == 0){
+              int rssToAdd = random.GetInt(1, maxRSS);
+              resources[num] = rssToAdd;
+              count2++;
+            }
           }
         }
       }

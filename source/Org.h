@@ -8,7 +8,7 @@
 class Organism {
     private:
         
-        double mut_rate = 0.02;
+        double mut_rate = 0.002;
         double qs_radius = 10;
         double quorum_threshold = 6;
         emp::Ptr<emp::Random> random;
