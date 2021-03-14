@@ -9,8 +9,6 @@ class Organism {
     private:
         
         double mut_rate = 0.002;
-        double qs_radius = 10;
-        double quorum_threshold = 6;
         emp::Ptr<emp::Random> random;
 
     public:
@@ -44,6 +42,8 @@ class Organism {
       points += _in;
     }
     void mutate() {
+      /*mutates an offspring with a value from the normal curve 
+      centered at 0 with 0.002*/ 
         coop_prob += random->GetRandNormal(0.0, mut_rate);
         if(coop_prob < 0) coop_prob = 0;
         else if (coop_prob > 1) coop_prob = 1; 
@@ -52,6 +52,7 @@ class Organism {
     
 
     emp::Ptr<Organism> checkReproduction() {
+      /*checks if an organism can reproduce*/
         emp::Ptr<Organism> offspring;
         if(points>=1000) {
             offspring = new Organism(*this);
@@ -62,10 +63,5 @@ class Organism {
         return offspring;
     }
 
-    void Process() {
-        //points += resources; 
-       // individualRSSacq();
-        //world calls this every update 
-    }
 };
 #endif

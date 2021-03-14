@@ -25,6 +25,7 @@ class OrgWorld : public emp::World<Organism> {
     OrgWorld(emp::Random &random, int _maxRSS, int _numRSS) : emp::World<Organism>(random), random(random), maxRSS(_maxRSS), numRSS(_numRSS) {
         
         random_ptr.New(random);
+        /*the pop. struct can either be commented out or not*/
         SetPopStruct_Grid(100, 100);
         resources.assign(10000, 0);
         addResources();
@@ -60,19 +61,21 @@ class OrgWorld : public emp::World<Organism> {
     int checkQuorumSense(int loc){
       /*how to incorporate where the rss is?*/ 
       double numCoop = 0;
+      int netNbr = 0;
       for (int i = 0; i < pop.size(); i++){
-        //std::cout << "hello";
         if (i == loc){
           continue; 
         } if (IsOccupied(i) == false){
           continue;
         } if (isNeighbor(loc, i)){
+          netNbr++;
           double randCoopProb = random.GetDouble();
           if (pop[loc]->coop_prob > randCoopProb and pop[i]->coop_prob > randCoopProb){
             numCoop++;
           }
         }
       }
+     
       return numCoop; 
     }
 
@@ -85,14 +88,15 @@ class OrgWorld : public emp::World<Organism> {
     }
 
     bool individualRSSacq(int location){
-      
+      /* the mechanism to individually collect resources*/
       double randCoopProb = random.GetDouble();
       double rssProb = random.GetDouble();
       if (pop[location]->coop_prob < randCoopProb){
-        //std::cout << pop[location]->coop_prob << std::endl;
         for (int i = 0; i < 10000; i++){
             if (isNeighbor(location, i)) 
               if (0.3 >= rssProb){
+                /*30% probability of success when individually 
+                collecting resources*/
                 pop[location]->points += resources[i];
                 resources[i] = 0;
                 return true;
@@ -103,7 +107,8 @@ class OrgWorld : public emp::World<Organism> {
    } 
 
     void addResources(){
-
+      /* method to add resources that have been consumed in the 
+      previous time step*/
       if (numRSS == 9999){
         for (int i = 0; i < resources.size(); i++){ 
           if (resources[i] == 0){
@@ -123,7 +128,6 @@ class OrgWorld : public emp::World<Organism> {
           int diff = numRSS - count;
           int count2 = 0;
           while (count2 <= diff){
-            //comments!
             int num = random.GetInt(resources.size());
             if (resources[num] == 0){
               int rssToAdd = random.GetInt(1, maxRSS);
@@ -204,13 +208,7 @@ class OrgWorld : public emp::World<Organism> {
           }
           total_coop += pop[i]->getCoopProb();
       }
-      
       addResources();
-      //std::cout << "Average cooperation probability: " << total_coop/GetNumOrgs() <<std::endl;
-      /* how many organisms to start with?
-      how many resources and resource values?
-      what mutation value?
-      what is the replication threshold?*/
   }
 };
 #endif

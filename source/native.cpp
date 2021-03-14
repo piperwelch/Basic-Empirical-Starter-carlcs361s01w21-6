@@ -3,16 +3,16 @@
 //  Released under MIT license; see LICENSE
 
 #include <iostream>
-
+ 
 #include "emp/base/vector.hpp"
 #include "emp/config/command_line.hpp"
 #include "emp/math/random_utils.hpp"
 #include "emp/math/Random.hpp"    
 #include "emp/config/ArgManager.hpp" 
- 
+   
 #include "World.h"   
-      
-// This is the main function for the NATIVE version of this project.
+        
+// This is the main function for  the NATIVE version of this project.
   
   
 EMP_BUILD_CONFIG(MyConfigType,
@@ -21,7 +21,7 @@ EMP_BUILD_CONFIG(MyConfigType,
     VALUE(maxRss, int, 2500, "What should be the highest value resource?"),
     VALUE(numRss, int, 7000, "What should be the number of resources placed on the board?"),
     VALUE(FILE_NAME, std::string, "_data.dat", "Root output file name")
-)
+) 
 
 int main(int argc, char* argv[])
 {
@@ -40,31 +40,22 @@ int main(int argc, char* argv[])
   } if (args.TestUnknown() == false) {
   std::cerr << "Leftover args no good." << std::endl;
   exit(1);
-  } 
-
-  /*What is this?*/
- // emp::vector<std::string> args = emp::cl::args_to_strings(argc, argv);
- 
+  }  
 
   emp::Random random(config.SEED());
-  
   OrgWorld world(random, config.maxRss(), config.numRss());
- 
-
+  /*where the data will be collected*/
   world.SetupOrgFile("data.csv"); 
+  /*sets up a world with 10000 places*/
   world.Resize(100,100);
-  
+  /*creates 1000 new organisms*/         
   for (int i = 0; i < 1000; i++){
     emp::Ptr<Organism> new_org = new Organism(&random, 0.5);
     world.Inject(*new_org);
   }
-   
- 
-  
-
+  /* runs experimetn for 2300 updates*/
   for(int i=0; i < 2300; i++) {
-    //std::cout<< "Update: " << i << std::endl; 
-    //   std::cout << "Population: " << world.GetNumOrgs() << std::endl;
     world.Update();
   }
 }
+ 
